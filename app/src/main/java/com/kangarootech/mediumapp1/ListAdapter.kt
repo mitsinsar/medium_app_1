@@ -89,17 +89,18 @@ class ListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private fun getSpanSizeLookup(): GridLayoutManager.SpanSizeLookup {
         return object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return if (items[position] is TitleListItem) {
-                    SPAN_SIZE
-                } else {
-                    DEFAULT_SPAN_SIZE
+                return when (items[position].getType()) {
+                    TITLE.ordinal -> SPAN_SIZE
+                    DIGIT.ordinal -> DIGIT_SPAN_SIZE
+                    else -> DEFAULT_SPAN_SIZE
                 }
             }
         }
     }
 
     companion object {
-        const val SPAN_SIZE = 3
+        const val SPAN_SIZE = 4
+        const val DIGIT_SPAN_SIZE = 2
         private const val DEFAULT_SPAN_SIZE = 1
         private val LOG_TAG = ListAdapter::class.java.simpleName
         private const val ITEM_SELECTION_PAYLOAD = "item_selection_payload"
