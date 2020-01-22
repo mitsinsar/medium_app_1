@@ -8,7 +8,7 @@ import com.kangarootech.mediumapp1.ListItem.Type.DIGIT
 import com.kangarootech.mediumapp1.ListItem.Type.TITLE
 import kotlin.properties.Delegates
 
-class ListAdapter : RecyclerView.Adapter<SelectableViewHolder>() {
+class ListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items = mutableListOf<ListItem>()
     private var selectedCharPosition by Delegates.observable<Int>(RecyclerView.NO_POSITION) { _, oldValue, newValue ->
@@ -27,7 +27,7 @@ class ListAdapter : RecyclerView.Adapter<SelectableViewHolder>() {
 
     override fun getItemCount() = items.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectableViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TITLE.ordinal -> TitleViewHolder.create(parent)
             CHAR.ordinal -> CharViewHolder.create(parent).apply {
@@ -40,7 +40,7 @@ class ListAdapter : RecyclerView.Adapter<SelectableViewHolder>() {
         }
     }
 
-    override fun onBindViewHolder(holder: SelectableViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is DigitViewHolder -> holder.bind(items[position] as DigitListItem)
             is CharViewHolder -> holder.bind(items[position] as CharListItem)
@@ -49,13 +49,15 @@ class ListAdapter : RecyclerView.Adapter<SelectableViewHolder>() {
         }
     }
 
-    override fun onBindViewHolder(holder: SelectableViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) {
             super.onBindViewHolder(holder, position, payloads)
         } else {
             payloads.forEach {
                 when (it) {
-                    ITEM_SELECTION_PAYLOAD -> holder.bind((items[position] as SelectableListItem).isSelected)
+                    ITEM_SELECTION_PAYLOAD -> {
+                        (holder as SelectableViewHolder).bind((items[position] as SelectableListItem).isSelected)
+                    }
                 }
             }
         }
